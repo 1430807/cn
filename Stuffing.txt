@@ -1,0 +1,110 @@
+import java.io.*;
+public class Stuffing
+{
+   public static void main(String args[]) throws IOException
+   {
+    String data;
+    BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+    System.out.print("\nEnter the Data Stream: ");
+    data=br.readLine();
+    String str;
+    int select;
+    System.out.print("\nThe various Framing techniques are:\n");
+    System.out.print("1) Character Count\n");
+    System.out.print("2) Character Stuffing\n");
+    System.out.print("3) Bit Stuffing\n");
+    System.out.print("Enter the number for the corresponding Framing technique:\n");
+    str=br.readLine();
+    select=Integer.parseInt(str);
+    switch(select)
+    {
+     case 1: System.out.print("\nTotal number of characters is: "+Count(data)+"\n");
+             break;
+     case 2: System.out.print("\nEnter the Flag Stream: ");
+             String flag;
+             flag=br.readLine();
+             System.out.print("\nThe Frame after processing: "+CharStuff(data,flag)+"\n");
+             break;
+     case 3: System.out.print("\n\nThe Frame after processing: "+BitStuff(data)+"\n");
+             break;                                   
+    }
+            }
+            public static int Count(String input)
+            {                      
+                        return input.length();
+            }
+            public static String CharStuff(String input,String flag)
+            {
+                        int len=input.length();
+                        int lenf=flag.length();
+                        char frame[]=new char [2*len];
+                        int ni=0;
+                        int fromindex=0;
+                        for(int i=0;i<len;i++)
+                        {
+                                    fromindex=input.indexOf(flag,i);
+                                    if(fromindex==i)
+                                    {
+                                                frame[ni]='e';
+                                                ni++;
+                                                for(int j=0;j<lenf;j++,i++)
+                                                {
+                                                            frame[ni]=flag.charAt(j);
+                                                            ni++;
+                                                }
+                                    }
+                                    else if(fromindex>i)
+                                    {
+                                                for(int l=i;l<fromindex;l++,i++)
+                                                {
+                                                            frame[ni]=input.charAt(l);
+                                                            ni++;
+                                                }
+                                    }
+                                    else if(fromindex==-1)
+                                    {
+                                                for(int k=i;k<len;k++,i++)
+                                                {
+                                                            frame[ni]=input.charAt(k);
+                                                            ni++;
+                                                }
+                                                break;
+                                    }
+                                    i=i-1;
+                        }
+                        String output=new String (frame,0,ni);
+                        return flag+output+flag;
+            }
+            public static String BitStuff(String input)
+            {
+                        int count=0;
+                        int len=input.length();
+                        int maxs=len/5;
+                        int ni=0;
+                        char frame[]=new char [len+maxs];
+                        for(int i=0;i<len;i++)
+                        {
+                                    if(input.charAt(i)=='1')
+                                    {
+                                                count++;
+                                                if(count==5)
+                                                {
+                                                            count=0;
+                                                            frame[ni]=input.charAt(i);
+                                                            ni++;
+                                                            frame[ni]='0';
+                                                            ni++;
+                                                            continue;
+                                                }
+                                    }
+                                    else
+                                    {          
+                                                count=0;
+                                    }
+                                    frame[ni]=input.charAt(i);
+                                    ni++;
+                        }
+                        String output=new String (frame,0,ni);
+                        return output;                       
+            }           
+}
